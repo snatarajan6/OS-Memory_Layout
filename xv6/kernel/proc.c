@@ -110,8 +110,11 @@ int
 growproc(int n)
 {
   uint sz;
-  
   sz = proc->sz;
+  cprintf("growproc : guardpage %d \n " ,((USERTOP-(proc->proc_stack_sz*PGSIZE))-5*PGSIZE)); 
+  if((sz+n) > ((USERTOP-(proc->proc_stack_sz*PGSIZE))-5*PGSIZE))
+   return -1;
+  
   if(n > 0){
     if((sz = allocuvm(proc->pgdir, sz, sz + n)) == 0)
       return -1;

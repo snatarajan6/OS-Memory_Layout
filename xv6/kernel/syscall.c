@@ -24,6 +24,7 @@ fetchint(struct proc *p, uint addr, int *ip)
 	if(p->pid != 1)
 		return -1;
   }
+ 
 
 
   *ip = *(int*)(addr);
@@ -37,16 +38,23 @@ int
 fetchstr(struct proc *p, uint addr, char **pp)
 {
   char *s, *ep;
-
+  cprintf("entered fetchstr: addr = %d , p->sz = %d \n" , addr,  p->sz);
   if(((addr < (USERTOP - (p->proc_stack_sz*PGSIZE))) &&(addr >= p->sz)) || (addr >= USERTOP) || (addr == 0) )
     return -1;
 
   if(addr > 0 && addr < 2*PGSIZE)
 	if(p->pid != 1)
 	   return -1;
+   
 
   *pp = (char*)addr;
-  ep = (char*)USERTOP;
+  if(addr <= p->sz)
+    ep =(char *)p->sz; 
+  else
+    ep = (char*)USERTOP;
+
+   cprintf("fetchstr: addr = %d , ep = %d , p->sz = %d \n" , addr, ep, p->sz);
+
   for(s = *pp; s < ep; s++)
     if(*s == 0)
       return s - *pp;

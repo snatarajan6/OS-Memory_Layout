@@ -11,6 +11,9 @@ USER_PROGS := \
 	ls\
 	hello\
 	mkdir\
+	bounds_str\
+        stack2\
+        heap\
 	rm\
 	sh\
 	stressfs\
