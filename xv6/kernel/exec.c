@@ -43,7 +43,7 @@ exec(char *path, char **argv)
       continue;
     if(ph.memsz < ph.filesz)
       goto bad;
-    cprintf("ph.va = %d, ph.memsz = %d va + memsz = %d\n", ph.va, ph.memsz, ph.va+ ph.memsz);
+//    cprintf("ph.va = %d, ph.memsz = %d va + memsz = %d\n", ph.va, ph.memsz, ph.va+ ph.memsz);
     if((sz = allocuvm(pgdir, sz, ph.va + ph.memsz)) == 0)
       goto bad;
     if(loaduvm(pgdir, (char*)ph.va, ip, ph.offset, ph.filesz) < 0)
@@ -54,14 +54,14 @@ exec(char *path, char **argv)
 
   // Allocate a one-page stack at the next page boundary
   sz = PGROUNDUP(sz);
-  cprintf("sz %d \n " , sz);
+  //cprintf("sz %d \n " , sz);
    //if((sz = allocuvm(pgdir, sz, sz + PGSIZE)) == 0)
      //goto bad;
   if((stack_sz = allocuvm(pgdir, USERTOP-PGSIZE, USERTOP)) == 0)
     goto bad;
   // Push argument strings, prepare rest of stack in ustack.
   sp = stack_sz;
-  cprintf("sp = %d\n" , sp);
+ // cprintf("sp = %d\n" , sp);
   for(argc = 0; argv[argc]; argc++) {
     if(argc >= MAXARG)
       goto bad;
@@ -86,7 +86,7 @@ exec(char *path, char **argv)
     if(*s == '/')
       last = s+1;
   safestrcpy(proc->name, last, sizeof(proc->name));
-  cprintf("exec: copyout done \n");
+ // cprintf("exec: copyout done \n");
 
   // Commit to the user image.
   oldpgdir = proc->pgdir;
@@ -96,10 +96,10 @@ exec(char *path, char **argv)
   proc->proc_code_sz = sz;
   proc->tf->eip = elf.entry;  // main
   proc->tf->esp = sp;
-  cprintf("sz = %d , eip = %d , esp = sp %d \n" , proc->proc_code_sz, elf.entry, sp);
+  //cprintf("sz = %d , eip = %d , esp = sp %d \n" , proc->proc_code_sz, elf.entry, sp);
   switchuvm(proc);
   freevm(oldpgdir);
-  cprintf("exec: returning 0\n");
+  //cprintf("exec: returning 0\n");
 
   return 0;
 

@@ -78,10 +78,29 @@ trap(struct trapframe *tf)
    
   default:
     if(proc == 0 || (tf->cs&3) == 0){
+      
+      //if(rcr2() == 0x0)
+        // exit();
       // In kernel, it must be our mistake.
       cprintf("unexpected trap %d from cpu %d eip %x (cr2=0x%x)\n",
               tf->trapno, cpu->id, tf->eip, rcr2());
       panic("trap");
+    }
+
+  if((rcr2() > proc->sz) && (rcr2() < (USERTOP - (proc->proc_stack_sz*PGSIZE)))&& (rcr2() >= (USERTOP - ((proc->proc_stack_sz+1)*PGSIZE))))
+    {
+	
+	if( growstack() == 0 ){
+ 	//	cprintf("stack grew");
+		return ;
+	}
+	else{
+ 	  //  cprintf("I am here");
+	    cprintf("pid %d %s: trap %d err %d on cpu %d "
+		    "eip 0x%x addr 0x%x--kill proc\n",
+		    proc->pid, proc->name, tf->trapno, tf->err, cpu->id, tf->eip, rcr2());
+	    proc->killed = 1;
+	}
     }
     // In user space, assume process misbehaved.
     cprintf("pid %d %s: trap %d err %d on cpu %d "
@@ -90,6 +109,8 @@ trap(struct trapframe *tf)
             rcr2());
     proc->killed = 1;
   }
+  //cprintf("I am here 2 rcr2() %d", rcr2() );
+  //cprintf("pid %d %s: trap.c , fault page = %d \n", proc->pid, proc->name, rcr2()); 
 
   // Force process exit if it has been killed and is in user space.
   // (If it is still executing in the kernel, let it keep running 

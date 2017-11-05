@@ -38,7 +38,7 @@ int
 fetchstr(struct proc *p, uint addr, char **pp)
 {
   char *s, *ep;
-  cprintf("entered fetchstr: addr = %d , p->sz = %d \n" , addr,  p->sz);
+//  cprintf("entered fetchstr: addr = %d , p->sz = %d \n" , addr,  p->sz);
   if(((addr < (USERTOP - (p->proc_stack_sz*PGSIZE))) &&(addr >= p->sz)) || (addr >= USERTOP) || (addr == 0) )
     return -1;
 
@@ -53,7 +53,7 @@ fetchstr(struct proc *p, uint addr, char **pp)
   else
     ep = (char*)USERTOP;
 
-   cprintf("fetchstr: addr = %d , ep = %d , p->sz = %d \n" , addr, ep, p->sz);
+  // cprintf("fetchstr: addr = %d , ep = %d , p->sz = %d \n" , addr, ep, p->sz);
 
   for(s = *pp; s < ep; s++)
     if(*s == 0)

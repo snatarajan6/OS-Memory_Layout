@@ -81,7 +81,7 @@ userinit(void)
   extern char _binary_initcode_start[], _binary_initcode_size[];
   
   p = allocproc();
-  cprintf("userinit: returned from allocproc\n");
+  //cprintf("userinit: returned from allocproc\n");
   acquire(&ptable.lock);
   initproc = p;
   if((p->pgdir = setupkvm()) == 0)
@@ -111,7 +111,7 @@ growproc(int n)
 {
   uint sz;
   sz = proc->sz;
-  cprintf("growproc : guardpage %d \n " ,((USERTOP-(proc->proc_stack_sz*PGSIZE))-5*PGSIZE)); 
+  //cprintf("growproc : guardpage %d \n " ,((USERTOP-(proc->proc_stack_sz*PGSIZE))-5*PGSIZE)); 
   if((sz+n) > ((USERTOP-(proc->proc_stack_sz*PGSIZE))-5*PGSIZE))
    return -1;
   
@@ -125,6 +125,22 @@ growproc(int n)
   proc->sz = sz;
   switchuvm(proc);
   return 0;
+}
+
+int
+growstack(){
+
+uint sz = proc->sz;
+
+//cprintf("growing stack, code+heap sz = %d,growing to %d, guardpage %d \n",sz,(USERTOP - ((proc->proc_stack_sz+1)*PGSIZE)), sz + 5*PGSIZE);
+if((USERTOP - ((proc->proc_stack_sz+1)*PGSIZE)) < (sz + (5*PGSIZE)))
+	return -1;
+else{
+	if((sz = allocuvm(proc->pgdir, USERTOP - ((proc->proc_stack_sz+1)*PGSIZE), USERTOP - ((proc->proc_stack_sz)*PGSIZE)) == 0 ))
+	return -1;
+}
+proc->proc_stack_sz++;
+return 0;  
 }
 
 // Create a new process copying p as the parent.
@@ -147,7 +163,7 @@ fork(void)
     np->state = UNUSED;
     return -1;
   }
-  cprintf("fork: copyuvm done\n"); 
+  //cprintf("fork: copyuvm done\n"); 
   np->sz = proc->sz;
   np->parent = proc;
   np->proc_stack_sz = proc->proc_stack_sz;
@@ -164,7 +180,7 @@ fork(void)
   pid = np->pid;
   np->state = RUNNABLE;
   safestrcpy(np->name, proc->name, sizeof(proc->name));
-  cprintf("pid = %d\n", pid);
+  //cprintf("pid = %d\n", pid);
   return pid;
 }
 

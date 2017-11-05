@@ -49,11 +49,11 @@ sys_sbrk(void)
 
   if(argint(0, &n) < 0)
     return -1;
-  cprintf("n=%d\n", n);
+//  cprintf("n=%d\n", n);
   addr = proc->sz;
   if(growproc(n) < 0)
     return -1;
-  cprintf("growproc done\n");
+//  cprintf("growproc done\n");
   return addr;
 }
 

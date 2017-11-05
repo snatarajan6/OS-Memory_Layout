@@ -233,7 +233,7 @@ allocuvm(pde_t *pgdir, uint oldsz, uint newsz)
 
   if(newsz > USERTOP)
     return 0;
-  cprintf("allocuvm: oldsz : %d , newsz = %d \n" , oldsz , newsz);
+  //cprintf("allocuvm: oldsz : %d , newsz = %d \n" , oldsz , newsz);
   //if(newsz < oldsz)
     //return oldsz;
 
@@ -249,7 +249,7 @@ allocuvm(pde_t *pgdir, uint oldsz, uint newsz)
     //if(!(oldsz == 0))
     mappages(pgdir, (char*)a, PGSIZE, PADDR(mem), PTE_W|PTE_U);
   }
-  cprintf("allocuvm: oldsz : %d , newsz = %d \n" , oldsz , newsz);
+  //cprintf("allocuvm: oldsz : %d , newsz = %d \n" , oldsz , newsz);
   return newsz;
 }
 

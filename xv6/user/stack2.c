@@ -19,6 +19,7 @@ main(int argc, char *argv[])
   if(pid == 0) {
     uint sz = (uint) sbrk(0);
     sz = (sz+4096-1)/4096*4096;
+    printf(1,"stack2 sz :%d\n", sz);
     char* STACK = (char*)(159*4096);
 
     // if the fault is not handled, we will not reach the print
